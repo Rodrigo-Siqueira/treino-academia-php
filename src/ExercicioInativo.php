@@ -6,4 +6,6 @@ namespace App;
 
 use LogicException;
 
-class ExercicioInativo extends LogicException {}
+class ExercicioInativo extends LogicException
+{
+}

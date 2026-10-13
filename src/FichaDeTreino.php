@@ -30,7 +30,7 @@ class FichaDeTreino
     {
         return count($this->itens);
     }
-    
+
     public function quantidadeDeExerciciosPlanejados(): int
     {
         return $this->quantidadeDeItens();
