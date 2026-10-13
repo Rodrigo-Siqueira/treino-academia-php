@@ -70,7 +70,7 @@ class FichaDeTreino
     private function validarSeExercicioEstaAtivo(Exercicio $exercicio): void
     {
         if (!$exercicio->estaAtivo()) {
-            throw new LogicException(
+            throw new ExercicioInativo(
                 'Não é possível adicionar um exercício inativo à ficha.',
             );
         }
