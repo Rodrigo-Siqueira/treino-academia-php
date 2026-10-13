@@ -295,6 +295,10 @@ Este projeto não tem como propósito apenas entregar funcionalidades. Cada etap
 
 Este projeto possui finalidade didática e de organização pessoal.
 
+## Progresso de aprendizado
+
+O projeto é desenvolvido em marcos progressivos, com revisão técnica, testes automatizados e registro das decisões de modelagem.
+
 A aplicação registra informações objetivas fornecidas pelo usuário, mas não prescreve exercícios, cargas, progressões ou condutas relacionadas à saúde. O uso do sistema não substitui o acompanhamento de profissionais qualificados.
 
 ## Autor
