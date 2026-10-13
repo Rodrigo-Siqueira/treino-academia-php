@@ -104,7 +104,7 @@ final class FichaDeTreinoTest extends TestCase
         // Arrange
         $exercicio = new Exercicio('Remada sentada');
 
-        $item = new ItemDaFicha($exercicio, 3, 8, 12,);
+        $item = new ItemDaFicha($exercicio, 3, 8, 12);
 
         $ficha = new FichaDeTreino('Treino A');
         $ficha->adicionarItem($item);
@@ -113,7 +113,7 @@ final class FichaDeTreinoTest extends TestCase
         $exercicio->inativar();
 
         // Assert
-        $this->assertSame(1, $ficha->quantidadeDeItens(),);
+        $this->assertSame(1, $ficha->quantidadeDeItens());
     }
 
     public function testFichaCalculaTotalDeSeriesPlanejadas(): void
@@ -123,9 +123,9 @@ final class FichaDeTreinoTest extends TestCase
         $segundoExercicio = new Exercicio('Remada sentada');
         $terceiroExercicio = new Exercicio('Elevação lateral');
 
-        $primeiroItem = new ItemDaFicha($primeiroExercicio, 3, 8, 12,);
-        $segundoItem = new ItemDaFicha($segundoExercicio, 4, 8, 12,);
-        $terceiroItem = new ItemDaFicha($terceiroExercicio, 2, 8, 12,);
+        $primeiroItem = new ItemDaFicha($primeiroExercicio, 3, 8, 12);
+        $segundoItem = new ItemDaFicha($segundoExercicio, 4, 8, 12);
+        $terceiroItem = new ItemDaFicha($terceiroExercicio, 2, 8, 12);
 
         $ficha = new FichaDeTreino('Treino A');
         $ficha->adicionarItem($primeiroItem);
@@ -136,7 +136,7 @@ final class FichaDeTreinoTest extends TestCase
         $totalDeSeriesPlanejadas = $ficha->quantidadeTotalDeSeriesPlanejadas();
 
         // Assert
-        $this->assertSame(9, $totalDeSeriesPlanejadas,);
+        $this->assertSame(9, $totalDeSeriesPlanejadas);
     }
 
     public function testFichaVaziaPossuiZeroSeriesPlanejadas(): void
@@ -156,8 +156,8 @@ final class FichaDeTreinoTest extends TestCase
         // Preparação
         $exercicio = new Exercicio('Supino com halteres');
 
-        $primeiroItem = new ItemDaFicha($exercicio, 3, 8, 12,);
-        $segundoItem = new ItemDaFicha($exercicio, 4, 8, 12,);
+        $primeiroItem = new ItemDaFicha($exercicio, 3, 8, 12);
+        $segundoItem = new ItemDaFicha($exercicio, 4, 8, 12);
 
         $ficha = new FichaDeTreino('Treino B');
         $ficha->adicionarItem($primeiroItem);
@@ -171,7 +171,7 @@ final class FichaDeTreinoTest extends TestCase
         }
 
         // Assert
-        $this->assertSame(3, $ficha->quantidadeTotalDeSeriesPlanejadas(),);
+        $this->assertSame(3, $ficha->quantidadeTotalDeSeriesPlanejadas());
     }
 
     public function testFichaVaziaPossuiZeroExerciciosPlanejados(): void
@@ -190,9 +190,9 @@ final class FichaDeTreinoTest extends TestCase
         $segundoExercicio = new Exercicio('Remada sentada');
         $terceiroExercicio = new Exercicio('Elevação lateral');
 
-        $primeiroItem = new ItemDaFicha($primeiroExercicio, 3, 8, 12,);
-        $segundoItem = new ItemDaFicha($segundoExercicio, 4, 8, 12,);
-        $terceiroItem = new ItemDaFicha($terceiroExercicio, 2, 8, 12,);
+        $primeiroItem = new ItemDaFicha($primeiroExercicio, 3, 8, 12);
+        $segundoItem = new ItemDaFicha($segundoExercicio, 4, 8, 12);
+        $terceiroItem = new ItemDaFicha($terceiroExercicio, 2, 8, 12);
 
         $ficha = new FichaDeTreino('Treino A');
         $ficha->adicionarItem($primeiroItem);
