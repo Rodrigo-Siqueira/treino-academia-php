@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Exercicio;
+use App\ExercicioInativo;
 use App\FichaDeTreino;
 use App\ItemDaFicha;
 use InvalidArgumentException;
@@ -60,7 +61,7 @@ final class FichaDeTreinoTest extends TestCase
 
         $ficha = new FichaDeTreino('Treino A');
 
-        $this->expectException(LogicException::class);
+        $this->expectException(ExercicioInativo::class);
 
         $ficha->adicionarItem($item);
     }
