@@ -57,6 +57,42 @@ final class AplicacaoHttp
             );
         }
 
+        if ($metodo === 'GET' && $caminho === '/saudacao') {
+            $nome = $requisicao->parametroDeConsulta('nome');
+
+            if ($nome === null || trim($nome) === '') {
+                return new RespostaHttp(
+                    400,
+                    [
+                        'Content-Type' => 'application/json; charset=UTF-8',
+                    ],
+                    json_encode(
+                        [
+                            'erro' => 'O parâmetro nome é obrigatório.',
+                        ],
+                        JSON_THROW_ON_ERROR,
+                    ),
+                );
+            }
+
+            $nomeSeguro = htmlspecialchars(
+                trim($nome),
+                ENT_QUOTES | ENT_SUBSTITUTE,
+                'UTF-8',
+            );
+
+            return new RespostaHttp(
+                200,
+                [
+                    'Content-Type' => 'text/html; charset=UTF-8',
+                ],
+                sprintf(
+                    '<h1>Olá, %s!</h1>',
+                    $nomeSeguro,
+                ),
+            );
+        }
+
         return new RespostaHttp(
             404,
             [

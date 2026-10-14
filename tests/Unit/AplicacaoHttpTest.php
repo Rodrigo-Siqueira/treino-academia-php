@@ -181,4 +181,105 @@ final class AplicacaoHttpTest extends TestCase
 
         return $resultado;
     }
+
+    public function testSaudacaoRetornaNomeInformado(): void
+    {
+        // Arrange
+        $aplicacao = new AplicacaoHttp();
+
+        $requisicao = new RequisicaoHttp(
+            'GET',
+            '/saudacao',
+            [
+                'nome' => 'Rodrigo',
+            ],
+        );
+
+        // Act
+        $resposta = $aplicacao->responder(
+            $requisicao,
+        );
+
+        // Assert
+        $this->assertSame(
+            200,
+            $resposta->status(),
+        );
+
+        $this->assertSame(
+            'text/html; charset=UTF-8',
+            $resposta->cabecalhos()['Content-Type'],
+        );
+
+        $this->assertStringContainsString(
+            'Olá, Rodrigo!',
+            $resposta->corpo(),
+        );
+    }
+
+    public function testSaudacaoSemNomeRetornaRequisicaoInvalida(): void
+    {
+        // Arrange
+        $aplicacao = new AplicacaoHttp();
+
+        $requisicao = new RequisicaoHttp(
+            'GET',
+            '/saudacao',
+        );
+
+        // Act
+        $resposta = $aplicacao->responder(
+            $requisicao,
+        );
+
+        $dados = $this->decodificarJson(
+            $resposta->corpo(),
+        );
+
+        // Assert
+        $this->assertSame(
+            400,
+            $resposta->status(),
+        );
+
+        $this->assertSame(
+            'O parâmetro nome é obrigatório.',
+            $dados['erro'],
+        );
+    }
+
+    public function testSaudacaoCodificaHtmlDoNome(): void
+    {
+        // Arrange
+        $aplicacao = new AplicacaoHttp();
+
+        $requisicao = new RequisicaoHttp(
+            'GET',
+            '/saudacao',
+            [
+                'nome' => '<script>alert("teste")</script>',
+            ],
+        );
+
+        // Act
+        $resposta = $aplicacao->responder(
+            $requisicao,
+        );
+
+        // Assert
+        $this->assertSame(
+            200,
+            $resposta->status(),
+        );
+
+        $this->assertStringNotContainsString(
+            '<script>',
+            $resposta->corpo(),
+        );
+
+        $this->assertStringContainsString(
+            '&lt;script&gt;',
+            $resposta->corpo(),
+        );
+    }
 }
