@@ -7,6 +7,14 @@ services:
         GROUP_ID: ${GROUP_ID:-1000}
     image: treino-academia-php:8.4
     working_dir: /app
+    command:
+      - php
+      - -S
+      - 0.0.0.0:8000
+      - -t
+      - public
+    ports:
+      - "127.0.0.1:8000:8000"
     volumes:
       - .:/app
 
