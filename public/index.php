@@ -18,12 +18,30 @@ if (!is_string($caminho)) {
     $caminho = '/';
 }
 
-$aplicacao = new AplicacaoHttp();
+parse_str(
+    $_SERVER['QUERY_STRING'] ?? '',
+    $parametrosBrutos,
+);
+
+/** @var array<string, string> $parametrosDeConsulta */
+$parametrosDeConsulta = [];
+
+foreach ($parametrosBrutos as $nome => $valor) {
+    if (
+        is_string($nome)
+        && is_string($valor)
+    ) {
+        $parametrosDeConsulta[$nome] = $valor;
+    }
+}
 
 $requisicao = new RequisicaoHttp(
     $metodo,
     $caminho,
+    $parametrosDeConsulta,
 );
+
+$aplicacao = new AplicacaoHttp();
 
 $resposta = $aplicacao->responder(
     $requisicao,

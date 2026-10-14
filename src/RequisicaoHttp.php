@@ -8,9 +8,13 @@ final class RequisicaoHttp
 {
     private string $metodo;
 
+    /**
+     * @param array<string, string> $parametrosDeConsulta
+     */
     public function __construct(
         string $metodo,
         private string $caminho,
+        private array $parametrosDeConsulta = [],
     ) {
         $this->metodo = strtoupper($metodo);
     }
@@ -23,5 +27,11 @@ final class RequisicaoHttp
     public function caminho(): string
     {
         return $this->caminho;
+    }
+
+    public function parametroDeConsulta(
+        string $nome,
+    ): ?string {
+        return $this->parametrosDeConsulta[$nome] ?? null;
     }
 }

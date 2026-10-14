@@ -44,4 +44,36 @@ final class RequisicaoHttpTest extends TestCase
         );
     }
 
+    public function testMantemParametrosDeConsulta(): void
+    {
+        // Act
+        $requisicao = new RequisicaoHttp(
+            'GET',
+            '/saudacao',
+            [
+                'nome' => 'Rodrigo',
+            ],
+        );
+
+        // Assert
+        $this->assertSame(
+            'Rodrigo',
+            $requisicao->parametroDeConsulta('nome'),
+        );
+    }
+
+    public function testParametroDeConsultaAusenteRetornaNull(): void
+    {
+        // Arrange
+        $requisicao = new RequisicaoHttp(
+            'GET',
+            '/saudacao',
+        );
+
+        // Act
+        $nome = $requisicao->parametroDeConsulta('nome');
+
+        // Assert
+        $this->assertNull($nome);
+    }
 }
