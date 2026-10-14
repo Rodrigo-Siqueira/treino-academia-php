@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\AplicacaoHttp;
-use App\EstadoDaSessao;
+use App\RequisicaoHttp;
 use PHPUnit\Framework\TestCase;
 
 final class AplicacaoHttpTest extends TestCase
@@ -15,10 +15,14 @@ final class AplicacaoHttpTest extends TestCase
         // Arrange
         $aplicacao = new AplicacaoHttp();
 
-        // Act
-        $resposta = $aplicacao->responder(
+        $requisicao = new RequisicaoHttp(
             'GET',
             '/',
+        );
+
+        // Act
+        $resposta = $aplicacao->responder(
+            $requisicao,
         );
 
         // Assert
@@ -44,9 +48,13 @@ final class AplicacaoHttpTest extends TestCase
         $aplicacao = new AplicacaoHttp();
 
         // Act
-        $resposta = $aplicacao->responder(
+        $requisicao = new RequisicaoHttp(
             'GET',
             '/status',
+        );
+
+        $resposta = $aplicacao->responder(
+            $requisicao,
         );
 
         $dados = $this->decodificarJson(
@@ -81,9 +89,13 @@ final class AplicacaoHttpTest extends TestCase
         $aplicacao = new AplicacaoHttp();
 
         // Act
-        $resposta = $aplicacao->responder(
+        $requisicao = new RequisicaoHttp(
             'GET',
             '/nao-existe',
+        );
+
+        $resposta = $aplicacao->responder(
+            $requisicao,
         );
 
         $dados = $this->decodificarJson(
@@ -108,9 +120,13 @@ final class AplicacaoHttpTest extends TestCase
         $aplicacao = new AplicacaoHttp();
 
         // Act
-        $resposta = $aplicacao->responder(
+        $requisicao = new RequisicaoHttp(
             'POST',
             '/status',
+        );
+
+        $resposta = $aplicacao->responder(
+            $requisicao,
         );
 
         $dados = $this->decodificarJson(

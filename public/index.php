@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\AplicacaoHttp;
+use App\RequisicaoHttp;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -19,9 +20,13 @@ if (!is_string($caminho)) {
 
 $aplicacao = new AplicacaoHttp();
 
-$resposta = $aplicacao->responder(
+$requisicao = new RequisicaoHttp(
     $metodo,
     $caminho,
+);
+
+$resposta = $aplicacao->responder(
+    $requisicao,
 );
 
 http_response_code(

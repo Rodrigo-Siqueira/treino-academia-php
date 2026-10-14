@@ -7,9 +7,11 @@ namespace App;
 final class AplicacaoHttp
 {
     public function responder(
-        string $metodo,
-        string $caminho,
+        RequisicaoHttp $requisicao,
     ): RespostaHttp {
+        $metodo = $requisicao->metodo();
+        $caminho = $requisicao->caminho();
+
         if ($metodo === 'GET' && $caminho === '/') {
             return new RespostaHttp(
                 200,
