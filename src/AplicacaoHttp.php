@@ -6,6 +6,11 @@ namespace App;
 
 final class AplicacaoHttp
 {
+    public function __construct(
+        private ConsultaBancoDeDados $consultaBancoDeDados,
+    ) {
+    }
+
     public function responder(
         RequisicaoHttp $requisicao,
     ): RespostaHttp {
@@ -89,6 +94,23 @@ final class AplicacaoHttp
                 sprintf(
                     '<h1>Olá, %s!</h1>',
                     $nomeSeguro,
+                ),
+            );
+        }
+
+        if ($metodo === 'GET' && $caminho === '/banco') {
+            return new RespostaHttp(
+                200,
+                [
+                    'Content-Type' => 'application/json; charset=UTF-8',
+                ],
+                json_encode(
+                    [
+                        'banco' => $this
+                            ->consultaBancoDeDados
+                            ->nomeDoBanco(),
+                    ],
+                    JSON_THROW_ON_ERROR,
                 ),
             );
         }

@@ -9,12 +9,22 @@ services:
     working_dir: /app
     command:
       - php
+      - -d
+      - display_errors=0
+      - -d
+      - log_errors=1
       - -S
       - 0.0.0.0:8000
       - -t
       - public
     ports:
       - "127.0.0.1:8000:8000"
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - .:/app
 
