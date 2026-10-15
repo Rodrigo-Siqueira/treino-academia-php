@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\AplicacaoHttp;
+use App\ConsultaBancoDeDados;
 use App\RequisicaoHttp;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 final class AplicacaoHttpTest extends TestCase
 {
     public function testGetNaRaizRetornaPaginaInicial(): void
     {
         // Arrange
-        $aplicacao = new AplicacaoHttp();
+        $aplicacao = $this->criarAplicacao();
 
         $requisicao = new RequisicaoHttp(
             'GET',
@@ -45,7 +47,7 @@ final class AplicacaoHttpTest extends TestCase
     public function testGetEmStatusRetornaEstadoDaAplicacao(): void
     {
         // Arrange
-        $aplicacao = new AplicacaoHttp();
+        $aplicacao = $this->criarAplicacao();
 
         // Act
         $requisicao = new RequisicaoHttp(
@@ -86,7 +88,7 @@ final class AplicacaoHttpTest extends TestCase
     public function testCaminhoInexistenteRetornaNaoEncontrado(): void
     {
         // Arrange
-        $aplicacao = new AplicacaoHttp();
+        $aplicacao = $this->criarAplicacao();
 
         // Act
         $requisicao = new RequisicaoHttp(
@@ -117,7 +119,7 @@ final class AplicacaoHttpTest extends TestCase
     public function testPostEmStatusRetornaMetodoNaoPermitido(): void
     {
         // Arrange
-        $aplicacao = new AplicacaoHttp();
+        $aplicacao = $this->criarAplicacao();
 
         // Act
         $requisicao = new RequisicaoHttp(
@@ -185,7 +187,7 @@ final class AplicacaoHttpTest extends TestCase
     public function testSaudacaoRetornaNomeInformado(): void
     {
         // Arrange
-        $aplicacao = new AplicacaoHttp();
+        $aplicacao = $this->criarAplicacao();
 
         $requisicao = new RequisicaoHttp(
             'GET',
@@ -220,7 +222,7 @@ final class AplicacaoHttpTest extends TestCase
     public function testSaudacaoSemNomeRetornaRequisicaoInvalida(): void
     {
         // Arrange
-        $aplicacao = new AplicacaoHttp();
+        $aplicacao = $this->criarAplicacao();
 
         $requisicao = new RequisicaoHttp(
             'GET',
@@ -251,7 +253,7 @@ final class AplicacaoHttpTest extends TestCase
     public function testSaudacaoCodificaHtmlDoNome(): void
     {
         // Arrange
-        $aplicacao = new AplicacaoHttp();
+        $aplicacao = $this->criarAplicacao();
 
         $requisicao = new RequisicaoHttp(
             'GET',
@@ -280,6 +282,88 @@ final class AplicacaoHttpTest extends TestCase
         $this->assertStringContainsString(
             '&lt;script&gt;',
             $resposta->corpo(),
+        );
+    }
+
+    public function testGetEmBancoRetornaNomeDoBanco(): void
+    {
+        // Arrange
+        $aplicacao = $this->criarAplicacao();
+
+        $requisicao = new RequisicaoHttp(
+            'GET',
+            '/banco',
+        );
+
+        // Act
+        $resposta = $aplicacao->responder(
+            $requisicao,
+        );
+
+        $dados = $this->decodificarJson(
+            $resposta->corpo(),
+        );
+
+        // Assert
+        $this->assertSame(
+            200,
+            $resposta->status(),
+        );
+
+        $this->assertSame(
+            'application/json; charset=UTF-8',
+            $resposta->cabecalhos()['Content-Type'],
+        );
+
+        $this->assertSame(
+            'treino_teste',
+            $dados['banco'],
+        );
+    }
+
+    public function testFalhaNaConsultaDoBancoPropagaExcecao(): void
+    {
+        // Arrange
+        $consultaBancoDeDados = new class () implements ConsultaBancoDeDados {
+            public function nomeDoBanco(): string
+            {
+                throw new RuntimeException(
+                    'Falha interna simulada.',
+                );
+            }
+        };
+
+        $aplicacao = new AplicacaoHttp(
+            $consultaBancoDeDados,
+        );
+
+        $requisicao = new RequisicaoHttp(
+            'GET',
+            '/banco',
+        );
+
+        // Assert
+        $this->expectException(
+            RuntimeException::class,
+        );
+
+        // Act
+        $aplicacao->responder(
+            $requisicao,
+        );
+    }
+
+    private function criarAplicacao(): AplicacaoHttp
+    {
+        $consultaBancoDeDados = new class () implements ConsultaBancoDeDados {
+            public function nomeDoBanco(): string
+            {
+                return 'treino_teste';
+            }
+        };
+
+        return new AplicacaoHttp(
+            $consultaBancoDeDados,
         );
     }
 }
