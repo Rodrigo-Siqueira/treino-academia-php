@@ -2,9 +2,12 @@ FROM php:8.4-cli
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
+        libicu-dev \
         libpq-dev \
         unzip \
-    && docker-php-ext-install pdo_pgsql \
+    && docker-php-ext-install \
+        intl \
+        pdo_pgsql \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USER_ID=1000
