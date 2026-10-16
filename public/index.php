@@ -1,118 +1,20 @@
 <?php
 
-declare(strict_types=1);
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 
-use App\AplicacaoHttp;
-use App\RequisicaoHttp;
-use App\ConsultaBancoDeDadosPdo;
-use App\RespostaHttp;
+define('LARAVEL_START', microtime(true));
 
-require dirname(__DIR__) . '/vendor/autoload.php';
-
-$metodo = $_SERVER['REQUEST_METHOD'];
-
-$caminho = parse_url(
-    $_SERVER['REQUEST_URI'],
-    PHP_URL_PATH,
-);
-
-if (!is_string($caminho)) {
-    $caminho = '/';
+// Determine if the application is in maintenance mode...
+if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+    require $maintenance;
 }
 
-parse_str(
-    $_SERVER['QUERY_STRING'] ?? '',
-    $parametrosBrutos,
-);
+// Register the Composer autoloader...
+require __DIR__.'/../vendor/autoload.php';
 
-/** @var array<string, string> $parametrosDeConsulta */
-$parametrosDeConsulta = [];
+// Bootstrap Laravel and handle the request...
+/** @var Application $app */
+$app = require_once __DIR__.'/../bootstrap/app.php';
 
-foreach ($parametrosBrutos as $nome => $valor) {
-    if (
-        is_string($nome)
-        && is_string($valor)
-    ) {
-        $parametrosDeConsulta[$nome] = $valor;
-    }
-}
-
-$requisicao = new RequisicaoHttp(
-    $metodo,
-    $caminho,
-    $parametrosDeConsulta,
-);
-
-$host = getenv('POSTGRES_HOST') ?: 'db';
-$porta = getenv('POSTGRES_PORT') ?: '5432';
-$banco = getenv('POSTGRES_DB') ?: 'treino_academia';
-$usuario = getenv('POSTGRES_USER') ?: 'treino_app';
-$senha = getenv('POSTGRES_PASSWORD') ?: '';
-
-try {
-    $host = getenv('POSTGRES_HOST') ?: 'db';
-    $porta = getenv('POSTGRES_PORT') ?: '5432';
-    $banco = getenv('POSTGRES_DB') ?: 'treino_academia';
-    $usuario = getenv('POSTGRES_USER') ?: 'treino_app';
-    $senha = getenv('POSTGRES_PASSWORD') ?: '';
-
-    $pdo = new PDO(
-        sprintf(
-            'pgsql:host=%s;port=%s;dbname=%s',
-            $host,
-            $porta,
-            $banco,
-        ),
-        $usuario,
-        $senha,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        ],
-    );
-
-    $consultaBancoDeDados = new ConsultaBancoDeDadosPdo(
-        $pdo,
-    );
-
-    $aplicacao = new AplicacaoHttp(
-        $consultaBancoDeDados,
-    );
-
-    $resposta = $aplicacao->responder(
-        $requisicao,
-    );
-} catch (Throwable $erro) {
-    error_log(
-        sprintf(
-            '%s: %s',
-            $erro::class,
-            $erro->getMessage(),
-        ),
-    );
-
-    $resposta = new RespostaHttp(
-        500,
-        [
-            'Content-Type' => 'application/json; charset=UTF-8',
-        ],
-        json_encode(
-            [
-                'erro' => 'Erro interno do servidor.',
-            ],
-            JSON_THROW_ON_ERROR,
-        ),
-    );
-}
-
-http_response_code(
-    $resposta->status(),
-);
-
-foreach (
-    $resposta->cabecalhos()
-    as $nome => $valor
-) {
-    header($nome . ': ' . $valor);
-}
-
-echo $resposta->corpo();
+$app->handleRequest(Request::capture());
