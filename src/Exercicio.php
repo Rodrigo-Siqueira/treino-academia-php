@@ -9,6 +9,7 @@ use LogicException;
 
 class Exercicio
 {
+    private ?int $id = null;
     private string $nome;
     private bool $ativo = true;
 
@@ -17,6 +18,26 @@ class Exercicio
         $nome = trim($nome);
         $this->validarNome($nome);
         $this->nome = $nome;
+    }
+
+    public static function reconstituir(int $id, string $nome, bool $ativo): self
+    {
+        if ($id <= 0) {
+            throw new InvalidArgumentException(
+                'Exercício deve possuir um identificador válido.',
+            );
+        }
+
+        $exercicio = new self($nome);
+        $exercicio->id = $id;
+        $exercicio->ativo = $ativo;
+
+        return $exercicio;
+    }
+
+    public function id(): ?int
+    {
+        return $this->id;
     }
 
     public function nome(): string

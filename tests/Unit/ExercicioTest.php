@@ -79,4 +79,43 @@ final class ExercicioTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         new Exercicio('  ');
     }
+
+    public function testNovoExercicioAindaNaoPossuiIdentificador(): void
+    {
+        // Act
+        $exercicio = new Exercicio('Supino reto');
+
+        // Assert
+        $this->assertNull($exercicio->id());
+    }
+
+    public function testReconstituiExercicioExistente(): void
+    {
+        // Act
+        $exercicio = Exercicio::reconstituir(
+            id: 15,
+            nome: 'Supino reto',
+            ativo: false,
+        );
+
+        // Assert
+        $this->assertSame(15, $exercicio->id());
+
+        $this->assertSame('Supino reto', $exercicio->nome());
+
+        $this->assertFalse($exercicio->estaAtivo());
+    }
+
+    public function testNaoReconstituiExercicioComIdentificadorInvalido(): void
+    {
+        // Assert
+        $this->expectException(InvalidArgumentException::class);
+
+        // Act
+        Exercicio::reconstituir(
+            id: 0,
+            nome: 'Supino reto',
+            ativo: true,
+        );
+    }
 }
